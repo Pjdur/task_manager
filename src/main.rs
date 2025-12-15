@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fs;
+use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Task {
@@ -8,14 +9,30 @@ struct Task {
     done: bool,
 }
 
+fn get_tasks_file() -> PathBuf {
+    let mut dir = dirs::home_dir().expect("Could not find home directory");
+    
+    dir.push(".task_manager");
+
+    // Create ~/.task_manager if it doesn't exist
+    if !dir.exists() {
+        fs::create_dir_all(&dir).expect("Could not create ~/.task_manager directory");
+    }
+
+    dir.push("tasks.json");
+    dir
+}
+
 fn load_tasks() -> Vec<Task> {
-    let data = fs::read_to_string("tasks.json").unwrap_or_else(|_| "[]".to_string());
+    let path = get_tasks_file();
+    let data = fs::read_to_string(&path).unwrap_or_else(|_| "[]".to_string());
     serde_json::from_str(&data).unwrap_or_else(|_| vec![])
 }
 
 fn save_tasks(tasks: &Vec<Task>) {
+    let path = get_tasks_file();
     let json = serde_json::to_string_pretty(tasks).unwrap();
-    fs::write("tasks.json", json).expect("Unable to write file");
+    fs::write(&path, json).expect("Unable to write file");
 }
 
 fn add_task(text: String) {
