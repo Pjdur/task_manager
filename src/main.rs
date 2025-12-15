@@ -34,6 +34,20 @@ fn add_task(text: String) {
     println!("Added task #{id}");
 }
 
+fn list_tasks() {
+    let tasks = load_tasks();
+
+    if tasks.is_empty() {
+        println!("No tasks yet.");
+        return;
+    }
+
+    for task in tasks {
+        let status = if task.done { "[x]" } else { "[ ]" };
+        println!("{} {}: {}", status, task.id, task.text);
+    }
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -50,9 +64,12 @@ fn main() {
                 println!("Usage: task_manager add <task text>");
                 return;
             }
-
+    
             let text = args[2..].join(" ");
             add_task(text);
+        }
+        "list" => {
+            list_tasks();
         }
         _ => {
             println!("Unknown command: {}", command);
