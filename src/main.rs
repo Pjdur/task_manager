@@ -18,6 +18,44 @@ fn save_tasks(tasks: &Vec<Task>) {
     fs::write("tasks.json", json).expect("Unable to write file");
 }
 
+fn add_task(text: String) {
+    let mut tasks = load_tasks();
+
+    let id = (tasks.len() as u32) + 1;
+
+    tasks.push(Task {
+        id,
+        text,
+        done: false,
+    });
+
+    save_tasks(&tasks);
+
+    println!("Added task #{id}");
+}
+
 fn main() {
-    println!("Task manager starting...");
+    let args: Vec<String> = std::env::args().collect();
+
+    if args.len() < 2 {
+        println!("Usage: task_manager <command> [args]");
+        return;
+    }
+
+    let command = &args[1];
+
+    match command.as_str() {
+        "add" => {
+            if args.len() < 3 {
+                println!("Usage: task_manager add <task text>");
+                return;
+            }
+
+            let text = args[2..].join(" ");
+            add_task(text);
+        }
+        _ => {
+            println!("Unknown command: {}", command);
+        }
+    }
 }
