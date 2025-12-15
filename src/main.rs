@@ -48,6 +48,19 @@ fn list_tasks() {
     }
 }
 
+fn done(id: u32) {
+    let mut tasks = load_tasks();
+
+    for task in tasks.iter_mut() {
+        if task.id == id {
+            task.done = true;
+        }
+    }
+
+    save_tasks(&tasks);
+    println!("Marked task #{id} as done");
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -64,12 +77,25 @@ fn main() {
                 println!("Usage: task_manager add <task text>");
                 return;
             }
-    
+
             let text = args[2..].join(" ");
             add_task(text);
         }
         "list" => {
             list_tasks();
+        }
+        "done" => {
+            if args.len() < 3 {
+                println!("Usage: task_manager done <id>");
+                return;
+            }
+
+            let id: u32 = args[2].parse().unwrap_or_else(|_| {
+                println!("Invalid ID");
+                std::process::exit(1);
+            });
+
+            done(id);
         }
         _ => {
             println!("Unknown command: {}", command);
