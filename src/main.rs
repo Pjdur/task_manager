@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::fs;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -61,6 +61,23 @@ fn done(id: u32) {
     println!("Marked task #{id} as done");
 }
 
+fn delete(id: u32) {
+    let mut tasks = load_tasks();
+
+    let original_len = tasks.len();
+
+    // Keep only the tasks whose id is NOT the one we want to delete
+    tasks.retain(|task| task.id != id);
+
+    if tasks.len() == original_len {
+        println!("No task with id {id} found");
+        return;
+    }
+
+    save_tasks(&tasks);
+    println!("Deleted task #{id}");
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -96,6 +113,19 @@ fn main() {
             });
 
             done(id);
+        }
+        "delete" => {
+            if args.len() < 3 {
+                println!("Usage: task_manager delete <id>");
+                return;
+            }
+
+            let id: u32 = args[2].parse().unwrap_or_else(|_| {
+                println!("Invalid ID");
+                std::process::exit(1);
+            });
+
+            delete(id);
         }
         _ => {
             println!("Unknown command: {}", command);
