@@ -117,6 +117,25 @@ fn handle_command(command: &str, args: &[&str]) {
             }
             add_task(args.join(" "));
         }
+        "list" => {
+            list_tasks();
+        }
+        "done" => {
+            if args.is_empty() {
+                println!("Usage: done <id>");
+                return;
+            }
+        
+            let id: u32 = match args[0].parse() {
+                Ok(n) => n,
+                Err(_) => {
+                    println!("Invalid ID");
+                    return;
+                }
+            };
+        
+            done(id);
+        }
         _ => {
             println!("Unknown command");
         }
