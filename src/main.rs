@@ -136,6 +136,38 @@ fn handle_command(command: &str, args: &[&str]) {
         
             done(id);
         }
+        "undone" => {
+            if args.is_empty() {
+                println!("Usage: undone <id>");
+                return;
+            }
+        
+            let id: u32 = match args[0].parse() {
+                Ok(n) => n,
+                Err(_) => {
+                    println!("Invalid ID");
+                    return;
+                }
+            };
+        
+            undone(id);
+        }
+        "delete" => {
+            if args.is_empty() {
+                println!("Usage: delete <id>");
+                return;
+            }
+        
+            let id: u32 = match args[0].parse() {
+                Ok(n) => n,
+                Err(_) => {
+                    println!("Invalid ID");
+                    return;
+                }
+            };
+        
+            delete(id);
+        }
         _ => {
             println!("Unknown command");
         }
