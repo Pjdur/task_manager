@@ -115,7 +115,11 @@ fn handle_command(command: &str, args: &[&str]) {
                 println!("Usage: add <task text>");
                 return;
             }
-            add_task(args.join(" "));
+        
+            let text = args.join(" ");
+            let text = text.trim_matches('"');
+        
+            add_task(text.to_string());
         }
         "list" => {
             list_tasks();
