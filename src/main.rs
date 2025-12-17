@@ -11,7 +11,7 @@ struct Task {
 
 fn get_tasks_file() -> PathBuf {
     let mut dir = dirs::home_dir().expect("Could not find home directory");
-    
+
     dir.push(".task_manager");
 
     // Create ~/.task_manager if it doesn't exist
@@ -108,6 +108,56 @@ fn delete(id: u32) {
     println!("Deleted task #{id}");
 }
 
+fn handle_command(command: &str, args: &[&str]) {
+    match command {
+        "add" => {
+            if args.is_empty() {
+                println!("Usage: add <task text>");
+                return;
+            }
+            add_task(args.join(" "));
+        }
+        _ => {
+            println!("Unknown command");
+        }
+    }
+}
+
+fn repl() {
+    use std::io::{self, Write};
+
+    println!("Task Manager REPL");
+    println!("Type 'help' for commands.");
+
+    loop {
+        print!("> ");
+        io::stdout().flush().unwrap();
+
+        let mut input = String::new();
+        if io::stdin().read_line(&mut input).is_err() {
+            println!("Error reading input");
+            continue;
+        }
+
+        let input = input.trim();
+
+        if input == "exit" || input == "quit" {
+            break;
+        }
+
+        if input.is_empty() {
+            continue;
+        }
+
+        // Split into command + args
+        let mut parts = input.split_whitespace();
+        let command = parts.next().unwrap();
+        let args: Vec<&str> = parts.collect();
+
+        handle_command(command, &args);
+    }
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
@@ -118,7 +168,15 @@ fn main() {
 
     let command = &args[1];
 
+    if args[1] == "repl" {
+        repl();
+        return;
+    }
+
     match command.as_str() {
+        "repl" => {
+            repl()
+        }
         "add" => {
             if args.len() < 3 {
                 println!("Usage: task_manager add <task text>");
