@@ -58,6 +58,34 @@ Example:
 task_manager delete 2
 ```
 
+### `help`
+Show all available commands and their descriptions.
+
+Example:
+```bash
+task_manager help
+```
+
+## REPL Mode
+
+You can also use the task manager interactively:
+
+```bash
+task_manager repl
+```
+
+Inside the REPL, all the same commands work:
+
+```
+add <text>
+list
+done <id>
+undone <id>
+delete <id>
+help
+exit
+```
+
 ## Storage
 
 Tasks are saved in:
