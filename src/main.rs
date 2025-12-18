@@ -110,13 +110,14 @@ fn delete(id: u32) {
 
 fn help() {
     println!(r#"Commands:
-      add <text>
-      list
-      done <id>
-      undone <id>
-      delete <id>
-      exit
-"#)
+  add <text>      Add a new task
+  list            Show all tasks
+  done <id>       Mark a task as done
+  undone <id>     Mark a task as not done
+  delete <id>     Delete a task
+  help            Show this help message
+  exit            Quit the REPL
+"#);
 }
 
 fn handle_command(command: &str, args: &[&str]) {
