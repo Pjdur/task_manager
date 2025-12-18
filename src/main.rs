@@ -108,6 +108,17 @@ fn delete(id: u32) {
     println!("Deleted task #{id}");
 }
 
+fn help() {
+    println!(r#"Commands:
+      add <text>
+      list
+      done <id>
+      undone <id>
+      delete <id>
+      exit
+"#)
+}
+
 fn handle_command(command: &str, args: &[&str]) {
     match command {
         "add" => {
@@ -171,6 +182,9 @@ fn handle_command(command: &str, args: &[&str]) {
             };
         
             delete(id);
+        }
+        "help" => {
+            help();
         }
         _ => {
             println!("Unknown command");
@@ -282,6 +296,9 @@ fn main() {
             });
 
             delete(id);
+        }
+        "help" => {
+            help();
         }
         _ => {
             println!("Unknown command: {}", command);
